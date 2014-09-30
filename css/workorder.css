@@ -1,0 +1,27 @@
+body{ background-color:#1c2132; }
+.container{ background-color:#FFF; margin: 5px auto; padding-bottom: 20px; padding-top: 20px; min-width:430px; }
+.content{ background-color:#FFF; margin: 5px; padding: 10px; }
+.form-group{ margin-bottom: 0px; }
+.mb5{ margin-bottom: 0px; }
+.mb5{ margin-bottom: 5px; }
+
+#assignmentDetailDiv .form-group{ margin-bottom: 5px; }
+.p{ margin-bottom: 2px; }
+.noborder{ border:none !important; }
+.panel div{ padding-left:5px; padding-right:5px; }
+#previousTasksDiv { padding:0px;}
+.nopadding { padding:0px; }
+
+.breadcrumb{ margin-bottom:5px;}
+.logo{ padding: 10px 0px 15px 0px; }
+.headerTxt1{ margin-top:0px; margin-bottom:5px;}
+.headerTxt2{ margin-top:5px; margin-bottom:0px;}
+.headerTxt3{ margin-top:5px; margin-bottom:0px;}
+
+.spacer5 { height:5px; width:100%; }
+.spacer10 { height:10px; width:100%; }
+.spacer15 { height:15px; width:100%; }
+.spacer20 { height:20px; width:100%; }
+.spacer25 { height:25px; width:100%; }
+
+#costTable {margin-bottom:0px;}
