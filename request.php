@@ -9,11 +9,17 @@ include('../plan/auth.php');
 include('../plan/OPS/include.php');
 
 
-$site=new BIMSite($_GET['siteID']);
-$siteInfo=$site->getSiteInfo();
-$workOrderSetting=$siteInfo->getWorkOrderSetting();
-$project=new BIMProject($site->getProjectID());
-
+if ($_GET['siteID']!='') {
+	$site=new BIMSite($_GET['siteID']);
+	$siteInfo=$site->getSiteInfo();
+	$workOrderSetting=$siteInfo->getWorkOrderSetting();
+	$project=new BIMProject($site->getProjectID());
+} else {
+	if ($_GET['siteIDs']=='') {
+		header('location: requestlist.php?'.getParams());
+		return;
+	}
+}
 
 // Fix $_GET
 //print_r($_SERVER);
@@ -38,6 +44,10 @@ if ($check) {
 	$fullName=$userData['FullName'];
 	$email=$userData['email'];
 }
+if (isset($_SESSION['name'])) $fullName=$_SESSION['name'];
+if (isset($_SESSION['requestEmail'])) $email=$_SESSION['requestEmail'];
+if (isset($_SESSION['requestTelephone'])) $telephone=$_SESSION['requestTelephone'];
+if (isset($_SESSION['chargeCode'])) $chargeCode=$_SESSION['chargeCode'];
 
 if (isset($_POST['name'])) $fullName=$_POST['name'];
 if (isset($_POST['requestEmail'])) $email=$_POST['requestEmail'];
@@ -337,6 +347,7 @@ if (($_GET['pastWorkOrders']==1) && ($email!='')) {
 <script type="text/javascript" src="js/jquery.cookie.js"></script>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/workorder.js"></script>
+<?php if ($_GET['siteID']!='') { ?>
 <script type="text/javascript" language="javaScript"><!--
 $(document).ready(function(){ 
 });
@@ -510,12 +521,12 @@ var params = {
 
 -->
 </script>
+<?php } ?>
 <style>
-<?php if (trim($workOrderSetting->getLogoURL())!='') { ?>
+<?php if ($_GET['siteID']!=0 && trim($workOrderSetting->getLogoURL())!='') { ?>
 .headerTxtDiv{padding-left:10px;}
 <?php } ?>
-.component-btn{ padding-left:40px; padding-right:40px;}
-.delete-btn{ padding-left:10px; padding-right:10px;}
+.site-btn{ padding-left:40px; padding-right:40px;}
 </style>
 </head>
 <body>
@@ -523,12 +534,30 @@ var params = {
 
 <div class="container">
 	<ul class="breadcrumb">
-		<li><a href="request.php?<?php echo getParams(); ?>&list=1">My Requests</a></li>
+		<li><a href="requestlist.php?<?php echo getParams(); ?>">My Requests</a></li>
 		<li class="active">Submit New Request</li>
 		<div class="pull-right" style="padding-left:10px;">
         <a href="../plan/OpsBug.php?<?php echo getParams(); ?>" target="bugs">Bugs</a>
 		</div>
 	</ul>
+        
+<?php if ((isset($siteIDs)) && ($siteID==0)) { ?>
+	<div class="pull-left headerTxtDiv">
+		<h3 class="headerTxt1">Work Order Request</h3>
+	</div>
+	<div class="clearfix"></div>
+	<p>
+	Please select which site you would like to submit a work order request for:
+	</p>
+	<?php foreach($siteArr as $tmpSiteID=>$site) { ?>
+	<div class="col-xs-12 text-center mb10">
+		<input type="button" class="btn btn-default site-btn" onclick="document.location='request.php?<?php echo getParams(array('siteID'=>$site->getID())); ?>'" value="<?php
+		echo htmlentities($site->getName());
+		?>" />
+	</div>
+	<div class="clearfix"></div>
+	<?php } ?>
+<?php } else { ?>
 	<div class="logo col-xs-12">
     <?php if (trim($workOrderSetting->getLogoURL())!='') { ?>
     	<div class="pull-left">
@@ -537,15 +566,22 @@ var params = {
     <?php } ?>
     	<div class="pull-left headerTxtDiv">
             <h3 class="headerTxt1"><?php echo html($project->getName()); ?></h3>
-            <h4 class="headerTxt2"><?php echo html($site->getName()); ?></h4>
+            <h4 class="headerTxt2"><?php echo html($site->getName());
+				if (isset($_GET['siteIDs'])) {
+					?>
+					<br />
+					<small>(<a href="request.php?<?php echo getParams(array('siteID'=>'')); ?>">Select a different site</a>)</small>
+					<?php
+				}
+			?></h4>
         </div>
 	</div>
     <div class="clearfix"></div>
-    <?php if (!$siteInfo->getEnableWorkOrders()|| 1) { ?>
+    <?php if (!$siteInfo->getEnableWorkOrders()) { ?>
 	   <h4 class="text-danger text-center">The work orders system is not enabled for this scheme.</h4>
     <?php } else if ($_GET['submitted']==1) { ?>
 	   <h4 class="text-success text-center">Your Work Order Request has been submitted.</h4>
-		<p class="text-center">Click <a href="request.php<?php
+		<p class="text-center">Click <a href="requestlist.php?<?php
 			echo getParams();
 		?>">here</a> to return to My Requests</p>
 	 <?php } else { ?>
@@ -690,6 +726,7 @@ var params = {
 	</div>
 	</div>
 	<?php } ?>
+<?php } ?>
         <p class="text-center">&copy; <?php echo date('Y'); ?> Onuma</p> 
 </div>
 </body>

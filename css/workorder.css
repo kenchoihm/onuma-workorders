@@ -2,8 +2,11 @@ body{ background-color:#1c2132; }
 .container{ background-color:#FFF; margin: 5px auto; padding-bottom: 20px; padding-top: 20px; min-width:430px; }
 .content{ background-color:#FFF; margin: 5px; padding: 10px; }
 .form-group{ margin-bottom: 0px; }
-.mb5{ margin-bottom: 0px; }
+.mb0{ margin-bottom: 0px; }
 .mb5{ margin-bottom: 5px; }
+.mb10{ margin-bottom: 10px; }
+.mb15{ margin-bottom: 15px; }
+.mb20{ margin-bottom: 20px; }
 
 #assignmentDetailDiv .form-group{ margin-bottom: 5px; }
 .p{ margin-bottom: 2px; }

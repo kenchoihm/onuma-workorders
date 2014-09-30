@@ -2,7 +2,7 @@
 session_start();
 $priorityArr=array("(Not specified)", "Urgent", "Immediate", "Today", "Within a week", "When possible");
 $statusArr=array("Assigned","Work in progress","Completed");
-$getParams=array('sysID', 'siteID', 'workOrderID', 'email', 'showAll', 'showCompleted', 'filter', 'orderBy', 'order');
+$getParams=array('sysID', 'siteIDs', 'siteID', 'workOrderID', 'email', 'showAll', 'showCompleted', 'filter', 'orderBy', 'order');
 
 function getParams($overwriteParams=array()) {
 	global $getParams;
