@@ -351,7 +351,13 @@ if (($_GET['pastWorkOrders']==1) && ($email!='')) {
 <script type="text/javascript" language="javaScript"><!--
 $(document).ready(function(){ 
 });
+<?php if ($workOrderSetting->getRequestPassword()!='') { ?>
+<?php if (isset($_COOKIE['requestPassword'])) { ?>
+var passwordChecked=true;
+<?php } else { ?>
 var passwordChecked=false;
+<?php } ?>
+<?php } ?>
 var imgArr=new Array();
 var thumbnailArr=new Array();
 var params = {
@@ -433,25 +439,25 @@ var params = {
 	}
 	function checkSubmit() {
 		var form=document.forms['requestForm'];
-		if (form.name.value=='') {
+		if ($.trim(form.name.value)=='') {
 			alert('Please provide your name.');
 			form.name.focus();
 			return false;
 		}
-		if (form.requestEmail.value=='') {
+		if ($.trim(form.requestEmail.value)=='') {
 			alert('Please provide your email.');
 			form.requestEmail.focus();
 			return false;
 		}
 		<?php if ($workOrderSetting->getTelephoneRequired()) { ?>
-		if (form.requestTelephone.value=='') {
+		if ($.trim(form.requestTelephone.value)=='') {
 			alert('Please provide your telephone.');
 			form.requestTelephone.focus();
 			return false;
 		}
 		<?php } ?>
         <?php if ($workOrderSetting->getShowLocation()) { ?>
-		if ((form.bldgID.value=='') || ((form.spaceID.value=='') && (form.locationDescription.value==''))) {
+		if ((form.bldgID.value=='') || ((form.spaceID.value=='') && ($.trim(form.locationDescription.value)==''))) {
 			alert('Please provide the location.');
 			if (form.bldgID.value=='') {
 				form.bldgID.focus();
@@ -473,7 +479,7 @@ var params = {
 			return false;
 		}
 		<?php } ?>
-		if (form.requestDescription.value=='') {
+		if ($.trim(form.requestDescription.value)=='') {
 			alert('Please describe the reason for your Work Order Request.');
 			form.requestDescription.focus();
 			return false;
@@ -486,12 +492,12 @@ var params = {
 			<?php if ($workOrderSetting->getRequestPasswordDuration()>0) { ?>
 			$.cookie("requestPassword", $('#requestPasswordTxt').val(), { expires: <?php echo $workOrderSetting->getRequestPasswordDuration(); ?> });
 			<?php } ?>
-			$('#addTaskSubmitBtn').attr('disabled', false);
-			$('#addTaskSubmitBtn').click();
+			$('#submitBtn').attr('disabled', false);
+			$('#submitBtn').click();
 		} else {
 			alert('Password is not correct');
 			$('#requestPasswordTxt').focus();
-			$('#addTaskSubmitBtn').attr('disabled', false);
+			$('#submitBtn').attr('disabled', false);
 			return false;
 		}
 	}
@@ -512,7 +518,7 @@ var params = {
 		return false;
 	}
 <?php } ?>
-		form.submitBtn.disabled=true;
+		$('#submitBtn').attr('disabled', true);
 		return true;
 	}
 
@@ -712,7 +718,7 @@ var params = {
                 ?>
         <?php } ?>
 		<center>
-		<input name="submitBtn" type="submit" class="btn btn-default btn-sm mb5" value="Submit" style="width:150px;" />
+		<input name="submitBtn" id="submitBtn" type="submit" class="btn btn-default btn-sm mb5" value="Submit" style="width:150px;" />
 		</center>
 	</form>
 	<!-- Modal Panel for Uploading New Attachment -->
