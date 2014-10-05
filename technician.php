@@ -70,13 +70,13 @@ foreach ($workOrderEquipmentArr as $workOrderEquipment) {
 
 
 if ($_GET['checkPassword']==1) {
-	echo (($_POST['assigneePassword']==$workOrderSetting->getAssigneePassword())?1:0);
+	echo (($_POST['assigneePassword_'.$site->getID()]==$workOrderSetting->getAssigneePassword())?1:0);
 	exit;
 }
 
 if (isset($_REQUEST['action'])) {
 	if ($_REQUEST['action']=='addTask') {
-			if (($workOrderSetting->getAssigneePassword()=='') || ($workOrderSetting->getAssigneePassword()==$_POST['assigneePassword'])) {
+			if (($workOrderSetting->getAssigneePassword()=='') || ($workOrderSetting->getAssigneePassword()==$_POST['assigneePassword_'.$site->getID()])) {
 
 				$costArr=json_decode($_POST['costStr']);
 				if ($_POST['completed']==1) {
@@ -275,10 +275,10 @@ $admin->load($userID);
 		return;
 	}
 }
-if (isset($_COOKIE['assigneePassword'])) {
-	if ($workOrderSetting->getAssigneePassword()!=$_COOKIE['assigneePassword']) {
-		setcookie("assigneePassword", "", time() - 3600);
-		unset($_COOKIE['assigneePassword']);
+if (isset($_COOKIE['assigneePassword_'.$site->getID()])) {
+	if ($workOrderSetting->getAssigneePassword()!=$_COOKIE['assigneePassword_'.$site->getID()]) {
+		setcookie('assigneePassword_'.$site->getID(), "", time() - 3600);
+		unset($_COOKIE['assigneePassword_'.$site->getID()]);
 		header('location: technician.php?'.getParams(array('incorrectPassword'=>1)));
 		return;
 	}
@@ -489,7 +489,7 @@ function checkSubmit(){
 		if (result.responseText==1) {
 			passwordChecked=true;
 			<?php if ($workOrderSetting->getAssigneePasswordDuration()>0) { ?>
-			$.cookie("assigneePassword", $('#assigneePasswordTxt').val(), { expires: <?php echo $workOrderSetting->getAssigneePasswordDuration(); ?> });
+			$.cookie("assigneePassword_<?php echo $site->getID(); ?>", $('#assigneePasswordTxt').val(), { expires: <?php echo $workOrderSetting->getAssigneePasswordDuration(); ?> });
 			<?php } ?>
 			$('#addTaskSubmitBtn').attr('disabled', false);
 			$('#addTaskSubmitBtn').click();
@@ -511,7 +511,7 @@ function checkSubmit(){
 		  url: "technician.php?<?php echo getParams(); ?>&checkPassword=1",
 		  type: "POST",
 		  data: {
-			  "assigneePassword": $('#assigneePasswordTxt').val()
+			  "assigneePassword_<?php echo $site->getID(); ?>": $('#assigneePasswordTxt').val()
 		  },
 		  complete: onCheckPassword
 		});
@@ -520,6 +520,7 @@ function checkSubmit(){
 <?php } ?>
 	if (!confirm('Are you sure you want to submit the task?'+
 				'\n(This will not be editable after submission)')) {
+		$('#addTaskSubmitBtn').attr('disabled', false);
 		return false;
 	}
 	$('#costStr').val(JSON.stringify(costArr));
@@ -924,11 +925,11 @@ function onLoadComplete() {
                 </div>
 <?php if ($workOrderSetting->getAssigneePassword()!='') { ?>
         <?php
-		if (!isset($_COOKIE['assigneePassword'])) {
+		if (!isset($_COOKIE['assigneePassword_'.$site->getID()])) {
 		?>
         <div class="form-group<?php if ($_GET['incorrectPassword']==1) echo ' has-error'; ?>">
                 <label class="control-label col-xs-4">Password:</label>
-                <div class="col-xs-8"><input class="form-control" name="assigneePassword" id="assigneePasswordTxt" type="password" />
+                <div class="col-xs-8"><input class="form-control" name="assigneePassword_<?php echo $site->getID(); ?>" id="assigneePasswordTxt" type="password" />
         <?php if ($_GET['incorrectPassword']==1) { ?>
             <span class="help-block">The stored password is incorrect</span>
         <?php } ?>
