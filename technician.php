@@ -504,6 +504,7 @@ function checkSubmit(){
 		if ($.trim($('#assigneePasswordTxt').val())=='') {
 			alert('Please provide the password');
 			$('#assigneePasswordTxt').focus();
+			$('#addTaskSubmitBtn').attr('disabled', false);
 			return false;
 		}
 		$.ajax({
