@@ -10,6 +10,8 @@ include('../plan/OPS/include.php');
 if ($_GET['email']=='') redirect('requestlist.php?'.getParams());
 if ($_GET['workOrderID']==0) redirect('requestlist.php?'.getParams());
 
+if ($_GET['requestEmail']!='') $_GET['email']=$_GET['requestEmail'];
+
 $site=new BIMSite($_GET['siteID']);
 $siteInfo=$site->getSiteInfo();
 $workOrderSetting=$siteInfo->getWorkOrderSetting();
